@@ -91,8 +91,7 @@ export default function EarthquakesPoints() {
           vDepth = aDepth;
 
           float magNorm = clamp((aMagnitude - 6.0) / 3.0, 0.0, 1.0);
-float size = mix(4.0, 18.0, magNorm);
-
+          float size = mix(4.0, 18.0, magNorm);
 
           gl_PointSize = size;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -116,7 +115,6 @@ float size = mix(4.0, 18.0, magNorm);
 
             float depthNorm = clamp(vDepth / uMaxDepth, 0.0, 1.0);
 
-            // немного усилим средние глубины визуально
             depthNorm = pow(depthNorm, 0.6);
 
             // жёлтый → красный

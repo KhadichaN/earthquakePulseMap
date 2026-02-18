@@ -1,45 +1,86 @@
 # Earthquake Pulse Map
 
-An interactive 3D earthquake visualization on a globe: events appear as points, and a click triggers a “pulse” wave (ring) from the selected quake.  
-Data is fetched from **USGS Earthquake Feed / Catalog** (GeoJSON).
+An interactive 3D earthquake visualization on a globe.
+
+Historical earthquakes (1900–2026, M ≥ 6) are rendered as glowing GPU points inside the Earth with depth-based positioning and nonlinear scaling.
+
+Data is sourced from the **USGS Earthquake Catalog (GeoJSON)** and preprocessed into a binary format for performance.
+
+---
 
 ## Tech Stack
+
 - Vite + React + TypeScript (SWC)
 - Three.js
-- @react-three/fiber, @react-three/drei
+- @react-three/fiber
+- @react-three/drei
+- Custom GLSL shaders
+
+---
+
+## Current Features
+
+- 3D globe with rotation & zoom
+- Transparent Earth mesh
+- Coastlines rendered from Natural Earth dataset
+- Coastline converted from GeoJSON → binary format
+- Unified base radius across globe elements
+- Binary data pipeline for earthquakes
+- Earthquakes rendered as GPU points:
+  - Position: lat/lon → 3D sphere
+  - Depth: nonlinear scaling (visualized inside Earth)
+  - Unknown depth handled explicitly (-1)
+  - Color gradient by depth
+  - Additive glow shader
+
+---
+
+## Data Pipeline
+
+1. USGS GeoJSON (1900–2026, M ≥ 6)
+2. Node.js preprocessing scripts:
+   - `scripts/convert-earthquakes.js`
+   - `scripts/convert-coastline.js`
+3. Conversion to compact `.bin` files
+4. Runtime loading as `Float32Array`
+5. GPU rendering via custom shaders
+
+Binary format reduces runtime parsing overhead and improves rendering performance.
+
+---
 
 ## Planned Features
-- 3D globe (rotate / zoom)
-- Earthquakes as points:
-  - size by magnitude (mag)
-  - color by depth (depth)
-  - timeline playback (events in time order)
-- Click on a point:
-  - pulse wave (ring shockwave)
-  - tooltip/side panel (place, mag, depth, time, USGS link)
+
+- Timeline playback (chronological animation)
+- Pulse wave (shockwave ring) on click
+- Tooltip / side panel:
+  - place
+  - magnitude
+  - depth
+  - time
+  - USGS link
 - Filters:
-  - date range (e.g. last 30 days)
+  - date range
   - minimum magnitude
   - depth range
 - Playback speed controls (x1 / x4 / x16)
 
-## Current Status
-
-- 3D globe scene implemented
-- Transparent Earth mesh
-- Coastline rendered from Natural Earth GeoJSON
-- Glowing contour lines (custom shader material)
-- Orbit controls (rotate / zoom)
+---
 
 ## Data Sources
-- USGS Earthquake Feeds (GeoJSON): https://earthquake.usgs.gov/earthquakes/feed/
-- USGS Earthquake Catalog (FDSN Event API): https://earthquake.usgs.gov/fdsnws/event/1/
-- Natural Earth – 110m Coastline (Physical Vectors):  
-  https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-coastline/
+
+- USGS Earthquake Catalog (GeoJSON)  
+  https://earthquake.usgs.gov/
+
+- Natural Earth – 110m Coastline  
+  https://www.naturalearthdata.com/
+
+---
 
 ## Getting Started
 
-### 1) Install
+### Install
+
 ```bash
 npm install
 ```
