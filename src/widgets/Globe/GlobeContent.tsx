@@ -8,37 +8,47 @@ import EarthMesh from "./EarthMesh";
 import EarthquakesPoints from "./EarthquakesPoints";
 
 interface Props {
-  isRotating: boolean;
-  isPlaying: boolean;
-  timeSpeed: number;
+	isRotating: boolean;
+	isPlaying: boolean;
+	timeSpeed: number;
+	isAllMode: boolean;
 }
 
-export default function GlobeContent({ isRotating, isPlaying, timeSpeed }: Props) {
-  const globeRef = useRef<THREE.Group>(null);
+export default function GlobeContent({
+	isRotating,
+	isPlaying,
+	timeSpeed,
+	isAllMode,
+}: Props) {
+	const globeRef = useRef<THREE.Group>(null);
 
-  useFrame(() => {
-    if (isRotating && globeRef.current) {
-      globeRef.current.rotation.y += 0.001;
-    }
-  });
+	useFrame(() => {
+		if (isRotating && globeRef.current) {
+			globeRef.current.rotation.y += 0.001;
+		}
+	});
 
-  return (
-    <>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 5, 5]} intensity={1} />
+	return (
+		<>
+			<ambientLight intensity={0.6} />
+			<directionalLight position={[5, 5, 5]} intensity={1} />
 
-      <group ref={globeRef}>
-        <EarthMesh />
-        <ContinentsLines />
-        <EarthquakesPoints isPlaying={isPlaying} timeSpeed={timeSpeed} />
-      </group>
+			<group ref={globeRef}>
+				<EarthMesh />
+				<ContinentsLines />
+				<EarthquakesPoints
+					isPlaying={isPlaying}
+					timeSpeed={timeSpeed}
+					isAllMode={isAllMode}
+				/>
+			</group>
 
-      <OrbitControls
-        enablePan={false}
-        maxDistance={5}
-        minPolarAngle={0.1}
-        maxPolarAngle={Math.PI - 0.1}
-      />
-    </>
-  );
+			<OrbitControls
+				enablePan={false}
+				maxDistance={5}
+				minPolarAngle={0.1}
+				maxPolarAngle={Math.PI - 0.1}
+			/>
+		</>
+	);
 }

@@ -37,6 +37,11 @@ Data is sourced from the **USGS Earthquake Catalog (GeoJSON)** and preprocessed 
   - Adjustable playback speed (0.25x → 4x)
   - Nonlinear lifeWindow scaling for consistent visual density
   - Stable animation independent of globe rotation
+- Show All mode:
+  - Static full dataset rendering
+  - Timeline filtering disabled
+  - Play / Speed controls automatically disabled
+  - Enhanced brightness for analytical overview
 
 ---
 
@@ -56,7 +61,6 @@ Binary format reduces runtime parsing overhead and improves rendering performanc
 
 ## Planned Features
 
-- Show All mode (static full dataset rendering)
 - Pulse wave (shockwave ring) on click
 - Tooltip / side panel:
   - place
@@ -68,7 +72,6 @@ Binary format reduces runtime parsing overhead and improves rendering performanc
   - date range
   - minimum magnitude
   - depth range
-
 
 ---
 
@@ -91,5 +94,7 @@ npm install
 ```
 
 ### 2) Run
+
 ```bash
 npm run dev
+```
