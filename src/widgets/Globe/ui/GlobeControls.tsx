@@ -1,5 +1,6 @@
-import RotationButton from "./RotationButton";
 import PlayPauseButton from "./PlayPauseButton";
+import RotationButton from "./RotationButton";
+import SpeedControls from "./SpeedControls";
 
 import styles from "./styles.module.scss";
 
@@ -9,6 +10,9 @@ interface Props {
 
   isPlaying: boolean;
   onTogglePlay: () => void;
+
+  currentSpeed: number;
+  onChangeSpeed: (speed: number) => void;
 }
 
 export default function GlobeControls({
@@ -16,6 +20,8 @@ export default function GlobeControls({
   onToggleRotation,
   isPlaying,
   onTogglePlay,
+  currentSpeed,
+  onChangeSpeed,
 }: Props) {
   return (
     <div className={styles.controls}>
@@ -27,6 +33,11 @@ export default function GlobeControls({
       <PlayPauseButton
         isPlaying={isPlaying}
         onToggle={onTogglePlay}
+      />
+
+      <SpeedControls
+        currentSpeed={currentSpeed}
+        onChangeSpeed={onChangeSpeed}
       />
     </div>
   );

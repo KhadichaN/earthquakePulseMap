@@ -39,3 +39,16 @@
 .button:hover {
   transform: scale(1.1);
 }
+
+.speedText {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4bffea;
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.button:active .speedText {
+  transform: scale(0.9);
+  filter: drop-shadow(0 0 10px rgba(75, 255, 234, 0.8));
+}
+

@@ -4,12 +4,13 @@ import * as THREE from "three";
 
 interface Props {
   isPlaying: boolean;
-  timeSpeed: number; 
+  timeSpeed: number;
 }
 
 export default function EarthquakesPoints({ isPlaying, timeSpeed }: Props) {
   const [data, setData] = useState<Float32Array | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const BASE_TIME_SCALE = 0.02;
 
   const currentTimeRef = useRef(0);
   const isPlayingRef = useRef(isPlaying);
@@ -18,6 +19,7 @@ export default function EarthquakesPoints({ isPlaying, timeSpeed }: Props) {
     () => ({
       uMaxDepth: { value: 700.0 },
       uCurrentTime: { value: 0.0 },
+      uTimeSpeed: { value: 1.0 },
     }),
     [],
   );
@@ -42,11 +44,13 @@ export default function EarthquakesPoints({ isPlaying, timeSpeed }: Props) {
     if (!materialRef.current) return;
 
     if (isPlayingRef.current) {
-      currentTimeRef.current += delta * timeSpeedRef.current * 0.1;
+      currentTimeRef.current += delta * timeSpeedRef.current * BASE_TIME_SCALE;
+
       if (currentTimeRef.current > 1) currentTimeRef.current = 0;
     }
 
     uniforms.uCurrentTime.value = currentTimeRef.current;
+    uniforms.uTimeSpeed.value = timeSpeedRef.current;
   });
 
   const geometry = useMemo(() => {
@@ -63,7 +67,7 @@ export default function EarthquakesPoints({ isPlaying, timeSpeed }: Props) {
     const baseRadius = 1.02;
     const maxDepthKm = 700;
 
-    const v = new THREE.Vector3(); // меньше мусора для GC
+    const v = new THREE.Vector3();
 
     for (let i = 0; i < count; i++) {
       const x = data[i * stride];
@@ -81,7 +85,8 @@ export default function EarthquakesPoints({ isPlaying, timeSpeed }: Props) {
         depthNorm = depthNorm ** 0.6;
       }
 
-      const finalRadius = depth >= 0 ? baseRadius - depthNorm * 0.35 : baseRadius;
+      const finalRadius =
+        depth >= 0 ? baseRadius - depthNorm * 0.35 : baseRadius;
       const finalPos = v.multiplyScalar(finalRadius);
 
       positions[i * 3] = finalPos.x;
@@ -134,6 +139,8 @@ export default function EarthquakesPoints({ isPlaying, timeSpeed }: Props) {
         fragmentShader={`
           uniform float uMaxDepth;
           uniform float uCurrentTime;
+		  uniform float uTimeSpeed;
+
 
           varying float vDepth;
           varying float vTime;
@@ -142,15 +149,19 @@ export default function EarthquakesPoints({ isPlaying, timeSpeed }: Props) {
             float dist = length(gl_PointCoord - vec2(0.5));
             if (dist > 0.5) discard;
 
-            // --- ВРЕМЯ ---
+            // time
             float diff = uCurrentTime - vTime;
             if (diff < 0.0) discard;
 
-            float lifeWindow = 0.08;
+            float baseLifeWindow = 0.06;
+			float lifeWindow = baseLifeWindow / sqrt(uTimeSpeed);
+
+
+
             float life = 1.0 - clamp(diff / lifeWindow, 0.0, 1.0);
             if (life <= 0.0) discard;
 
-            // --- ЦВЕТ ---
+            // color
             vec3 color;
             if (vDepth < 0.0) {
               color = vec3(0.5, 0.5, 0.5);

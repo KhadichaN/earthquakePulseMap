@@ -34,8 +34,10 @@ Data is sourced from the **USGS Earthquake Catalog (GeoJSON)** and preprocessed 
 - Chronological timeline playback:
   - GPU-driven time uniform
   - Play / Pause controls
+  - Adjustable playback speed (0.25x → 4x)
+  - Nonlinear lifeWindow scaling for consistent visual density
   - Stable animation independent of globe rotation
-  
+
 ---
 
 ## Data Pipeline
@@ -54,7 +56,7 @@ Binary format reduces runtime parsing overhead and improves rendering performanc
 
 ## Planned Features
 
-- Adjustable playback speed (x0.25 / x0.5 / x1 / x4)
+- Show All mode (static full dataset rendering)
 - Pulse wave (shockwave ring) on click
 - Tooltip / side panel:
   - place
@@ -66,6 +68,7 @@ Binary format reduces runtime parsing overhead and improves rendering performanc
   - date range
   - minimum magnitude
   - depth range
+
 
 ---
 
