@@ -1,37 +1,37 @@
 import { useEffect, useState } from "react";
-import SummaryCard from "./SummaryCard";
 import DepthLegend from "./DepthLegend";
 import MagnitudeLegend from "./MagnitudeLegend";
+import SummaryCard from "./SummaryCard";
 
 import styles from "./styles.module.scss";
 
 interface Stats {
-  totalCount: number;
-  minMagnitude: number;
-  maxMagnitude: number;
-  minDepth: number;
-  maxDepth: number;
-  startYear: number;
-  endYear: number;
+	totalCount: number;
+	minMagnitude: number;
+	maxMagnitude: number;
+	minDepth: number;
+	maxDepth: number;
+	startYear: number;
+	endYear: number;
 }
 
 export default function InfoPanels() {
-  const [stats, setStats] = useState<Stats | null>(null);
+	const [stats, setStats] = useState<Stats | null>(null);
 
-  useEffect(() => {
-    fetch("/data/earthquakes-stats.json")
-      .then((res) => res.json())
-      .then((data) => setStats(data))
-      .catch(() => {
-        console.error("Failed to load stats");
-      });
-  }, []);
+	useEffect(() => {
+		fetch("/data/earthquakes-stats.json")
+			.then((res) => res.json())
+			.then((data) => setStats(data))
+			.catch(() => {
+				console.error("Failed to load stats");
+			});
+	}, []);
 
-  return (
-    <div className={styles.wrapper}>
-      <SummaryCard stats={stats} />
-      <DepthLegend stats={stats} />
-      <MagnitudeLegend stats={stats} />
-    </div>
-  );
+	return (
+		<div className={styles.wrapper}>
+			<SummaryCard stats={stats} />
+			<DepthLegend stats={stats} />
+			<MagnitudeLegend stats={stats} />
+		</div>
+	);
 }

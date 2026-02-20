@@ -1,5 +1,12 @@
 .canvasWrapper {
-  width: 100%;
-  height: 100%;
   position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+
+  background:
+    radial-gradient(900px 600px at 20% 25%, rgba(120, 90, 255, 0.18), transparent 60%),
+    radial-gradient(800px 700px at 80% 30%, rgba(0, 255, 210, 0.10), transparent 55%),
+    radial-gradient(1000px 900px at 50% 85%, rgba(255, 120, 190, 0.07), transparent 65%),
+    linear-gradient(180deg, #05060d 0%, #070a1c 45%, #03030a 100%);
 }

@@ -29,7 +29,7 @@
 
 
 .active {
-  filter: drop-shadow(0 0 6px rgba(75, 255, 234, 0.6));
+  filter: drop-shadow(0 0 6px #b494f8);
 }
 
 .inactive {
@@ -43,21 +43,21 @@
 .speedText {
   font-size: 15px;
   font-weight: 400;
-  color: #4bffea;
+  color: #b494f8;
   transition: transform 0.15s ease, filter 0.2s ease;
 
 }
 
 .button:active .speedText {
   transform: scale(0.9);
-  filter: drop-shadow(0 0 10px rgba(75, 255, 234, 0.8));
+  filter: drop-shadow(0 0 10px #b494f8);
 }
 
 
 .label {
   font-size: 14px;
   font-weight: 400;
-  color: #4bffea;
+  color: #b494f8;
 }
 
 

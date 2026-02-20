@@ -190,13 +190,13 @@ export default function EarthquakesPoints({
 				vec3 color;
 
 				if (vDepth < 0.0) {
-					color = vec3(0.5, 0.5, 0.5);
+					color = vec3(0.55, 0.52, 0.65);
 				} else {
 					float depthNorm = clamp(vDepth / uMaxDepth, 0.0, 1.0);
 					depthNorm = pow(depthNorm, 0.6);
 
-					vec3 shallow = vec3(1.0, 0.9, 0.0);
-					vec3 deep = vec3(1.0, 0.0, 0.0);
+					vec3 shallow = vec3(0.95, 0.72, 0.18);
+					vec3 deep = vec3(0.72, 0.08, 0.08);
 
 					color = mix(shallow, deep, depthNorm);
 				}

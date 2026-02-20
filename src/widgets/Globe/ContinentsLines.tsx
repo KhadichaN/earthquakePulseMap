@@ -30,8 +30,8 @@ export default function ContinentsLines() {
 				blending={THREE.AdditiveBlending}
 				depthWrite={false}
 				uniforms={{
-					uColor: { value: new THREE.Color("#4bffea") },
-					uIntensity: { value: 1.2 },
+					uColor: { value: new THREE.Color("#b494f8") },
+					uIntensity: { value: 1.6 },
 				}}
 				vertexShader={`
           varying float vIntensity;
@@ -47,8 +47,10 @@ export default function ContinentsLines() {
           varying float vIntensity;
 
           void main() {
-            float glow = vIntensity * uIntensity;
-            gl_FragColor = vec4(uColor * glow, glow);
+			float glow = vIntensity * uIntensity;
+			float alpha = glow * 1.3;
+
+			gl_FragColor = vec4(uColor * glow * 1.2, alpha);
           }
         `}
 			/>

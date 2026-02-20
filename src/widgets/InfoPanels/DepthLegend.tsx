@@ -1,35 +1,35 @@
 import styles from "./styles.module.scss";
 
 interface Props {
-  stats: { maxDepth: number } | null;
+	stats: { maxDepth: number } | null;
 }
 
 export default function DepthLegend({ stats }: Props) {
-  const datasetMax = stats ? `${stats.maxDepth} km` : "—";
+	const datasetMax = stats ? `${stats.maxDepth} km` : "—";
 
-  return (
-    <div className={styles.card}>
-      <h4 className={styles.legendTitle}>Depth (km)</h4>
+	return (
+		<div className={styles.card}>
+			<h4 className={styles.legendTitle}>Depth (km)</h4>
 
-      <div className={styles.depthRow}>
-        <span className={styles.depthLabel}>Shallow</span>
-        <div className={styles.gradientBar} />
-        <span className={styles.depthLabel}>Deep</span>
-      </div>
+			<div className={styles.depthRow}>
+				<span className={styles.depthLabel}>Shallow</span>
+				<div className={styles.gradientBar} />
+				<span className={styles.depthLabel}>Deep</span>
+			</div>
 
-      <div className={styles.legendLabels}>
-        <span>0</span>
-        <span>700 (clamped)</span>
-      </div>
+			<div className={styles.legendLabels}>
+				<span>0</span>
+				<span>700 (clamped)</span>
+			</div>
 
-      <div className={styles.unknownRow}>
-        <span className={styles.swatch} />
-        <span className={styles.unknownText}>Unknown depth</span>
-      </div>
+			<div className={styles.unknownRow}>
+				<span className={styles.swatch} />
+				<span className={styles.unknownText}>Unknown depth</span>
+			</div>
 
-      <p className={styles.note}>
-        Nonlinear mapping (pow 0.6). Dataset max: {datasetMax}.
-      </p>
-    </div>
-  );
+			<p className={styles.note}>
+				Nonlinear mapping (pow 0.6). Dataset max: {datasetMax}.
+			</p>
+		</div>
+	);
 }

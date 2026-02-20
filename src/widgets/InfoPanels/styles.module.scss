@@ -10,11 +10,11 @@
 }
 
 .card {
-    background: rgba(10, 15, 20, 0.65);
+    background: rgba(15, 3, 17, 0.65);
     backdrop-filter: blur(8px);
     padding: 14px;
     border-radius: 12px;
-    border: 1px solid rgba(75, 255, 234, 0.15);
+    border: 1px solid #b494f8e5;
 }
 
 .title {
@@ -26,7 +26,7 @@
 
 .value {
     font-size: 18px;
-    color: #4bffea;
+    color: #f2b82e;
     margin: 0;
 }
 
@@ -42,12 +42,6 @@
     color: #ffffff;
 }
 
-.gradientBar {
-    height: 8px;
-    border-radius: 6px;
-    background: linear-gradient(to right, #ffd700, #ff8c00, #ff0000);
-}
-
 .legendLabels {
     display: flex;
     justify-content: space-between;
@@ -61,12 +55,6 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;
-}
-
-.dot {
-    background: #4bffea;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(75, 255, 234, 0.6);
 }
 
 .small {
@@ -108,7 +96,7 @@
     height: 8px;
     border-radius: 999px;
 
-    background: linear-gradient(to right, #ffe600, #ff9a00, #ff0000);
+    background: linear-gradient(to right, #f2b82e, #b81414);
     box-shadow: 0 0 10px rgba(255, 120, 0, 0.25);
 }
 
@@ -131,7 +119,7 @@
     width: 12px;
     height: 12px;
     border-radius: 3px;
-    background: rgba(170, 170, 170, 0.8);
+    background: #8C8C8C;
     box-shadow: 0 0 8px rgba(200, 200, 200, 0.15);
 }
 
@@ -197,7 +185,7 @@
 }
 
 .link {
-    color: #4bffea;
+    color: #b494f8;
     text-decoration: underline;
     text-underline-offset: 2px;
 }
