@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import closeIcon from "@/shared/assets/icons/close.svg";
 import DepthLegend from "./DepthLegend";
 import MagnitudeLegend from "./MagnitudeLegend";
 import SummaryCard from "./SummaryCard";
@@ -15,7 +16,15 @@ interface Stats {
 	endYear: number;
 }
 
-export default function InfoPanels() {
+interface InfoPanelsProps {
+	showMobileClose?: boolean;
+	onMobileClose?: () => void;
+}
+
+export default function InfoPanels({
+	showMobileClose = false,
+	onMobileClose,
+}: InfoPanelsProps) {
 	const [stats, setStats] = useState<Stats | null>(null);
 
 	useEffect(() => {
@@ -29,6 +38,15 @@ export default function InfoPanels() {
 
 	return (
 		<div className={styles.wrapper}>
+			{showMobileClose && (
+				<button
+					type="button"
+					className={styles.closeBtn}
+					onClick={onMobileClose}
+				>
+					<img src={closeIcon} alt="Close info panels" />
+				</button>
+			)}
 			<SummaryCard stats={stats} />
 			<DepthLegend stats={stats} />
 			<MagnitudeLegend stats={stats} />

@@ -1,0 +1,130 @@
+.wrap {
+	position: absolute;
+	left: 50%;
+	bottom: 18px;
+	transform: translateX(-50%);
+	width: min(1400px, 96vw);
+	box-sizing: border-box;
+	padding: 20px 0px;
+	border-radius: 14px;
+
+	background: rgba(0, 0, 0, 0.049);
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	backdrop-filter: blur(2px);
+	pointer-events: none;
+}
+
+.legends {
+	display: flex;
+	flex-direction: column;
+	gap: 50px;
+	box-sizing: border-box;
+	padding: 0 0 4px 30px;
+	position: absolute;
+	top: 6px;
+}
+
+.legendMag,
+.legendDepth {
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.6);
+	letter-spacing: 0.15px;
+	line-height: 1.6;
+}
+
+.chartCell {
+	position: relative;
+
+	overflow: hidden;
+	contain: paint;
+	margin: 0 16px;
+}
+
+.chartHost {
+	position: absolute;
+	inset: 0;
+}
+
+.yGroup {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	font-size: 10px;
+	color: rgba(255, 255, 255, 0.5);
+	line-height: 1;
+	z-index: 3;
+	pointer-events: none;
+}
+
+.yGroupMag {
+	top: 0;
+}
+
+.yGroupLeft {
+	right: calc(100% + 4px);
+	text-align: right;
+}
+
+.yGroupRight {
+	left: calc(100% + 4px);
+	text-align: left;
+}
+
+.marker {
+	position: absolute;
+	top: -2px;
+	bottom: -2px;
+
+	transform: translateX(-50%);
+	width: 1px;
+
+	background: rgba(255, 255, 255, 0.6);
+	box-shadow:
+		0 0 6px 1px rgba(200, 170, 255, 0.4),
+		0 0 22px 3px rgba(180, 148, 255, 0.18);
+
+	z-index: 10;
+	will-change: left;
+}
+
+.markerHidden {
+	display: none;
+}
+
+.axis {
+	position: relative;
+	height: 14px;
+	margin: 4px 38px 0;
+}
+
+.axisStart,
+.axisEnd {
+	position: absolute;
+	top: 0;
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.55);
+}
+
+.axisStart {
+	left: 0;
+}
+
+.axisEnd {
+	right: 0;
+}
+
+.axisDate {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+
+	font-size: 11px;
+	font-variant-numeric: tabular-nums;
+	color: rgba(255, 255, 255, 0.9);
+	white-space: nowrap;
+
+	background: none;
+	will-change: left;
+}

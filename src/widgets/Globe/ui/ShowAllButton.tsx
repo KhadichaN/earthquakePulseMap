@@ -1,18 +1,14 @@
+import { useTime } from "@/shared/context/TimeContext";
 import styles from "./styles.module.scss";
 
-interface Props {
-	isAllMode: boolean;
-	onToggle: () => void;
-}
+export default function ShowAllButton() {
+	const { isAllMode, toggleAllMode } = useTime();
 
-export default function ShowAllButton({ isAllMode, onToggle }: Props) {
 	return (
 		<button
 			type="button"
-			className={`${styles.button} ${
-				isAllMode ? styles.active : styles.inactive
-			}`}
-			onClick={onToggle}
+			className={`${styles.button} ${isAllMode ? styles.active : styles.inactive}`}
+			onClick={toggleAllMode}
 		>
 			<span className={styles.label}>ALL</span>
 		</button>

@@ -45,7 +45,10 @@ Data is sourced from the **USGS Earthquake Catalog (GeoJSON)** and preprocessed 
   - Dataset summary
   - Depth color scale
   - Magnitude → point size reference
-
+- Chart:
+  - date
+  - magnitude
+  - depth
 
 ---
 
@@ -65,10 +68,7 @@ Binary format reduces runtime parsing overhead and improves rendering performanc
 
 ## Planned Features
 
-- Chart:
-  - date
-  - magnitude
-  - depth
+- "Past 7 days" mode 
 - Tooltip / side panel:
   - place
   - magnitude
@@ -76,7 +76,6 @@ Binary format reduces runtime parsing overhead and improves rendering performanc
   - time
   - USGS link
 - Pulse interaction (event highlight)
-- "Past 7 days" mode 
 - Performance optimizations for high-density rendering
 
 ---

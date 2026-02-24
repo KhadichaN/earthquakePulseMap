@@ -3,23 +3,13 @@ import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import type * as THREE from "three";
 
+import { useTime } from "@/shared/context/TimeContext";
 import ContinentsLines from "./ContinentsLines";
 import EarthMesh from "./EarthMesh";
 import EarthquakesPoints from "./EarthquakesPoints";
 
-interface Props {
-	isRotating: boolean;
-	isPlaying: boolean;
-	timeSpeed: number;
-	isAllMode: boolean;
-}
-
-export default function GlobeContent({
-	isRotating,
-	isPlaying,
-	timeSpeed,
-	isAllMode,
-}: Props) {
+export default function GlobeContent() {
+	const { isRotating } = useTime();
 	const globeRef = useRef<THREE.Group>(null);
 
 	useFrame(() => {
@@ -36,16 +26,12 @@ export default function GlobeContent({
 			<group ref={globeRef}>
 				<EarthMesh />
 				<ContinentsLines />
-				<EarthquakesPoints
-					isPlaying={isPlaying}
-					timeSpeed={timeSpeed}
-					isAllMode={isAllMode}
-				/>
+				<EarthquakesPoints />
 			</group>
 
 			<OrbitControls
 				enablePan={false}
-				maxDistance={5}
+				maxDistance={6}
 				minPolarAngle={0.1}
 				maxPolarAngle={Math.PI - 0.1}
 			/>

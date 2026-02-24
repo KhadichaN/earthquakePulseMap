@@ -2,25 +2,17 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
-interface Props {
-	isPlaying: boolean;
-	timeSpeed: number;
-	isAllMode: boolean;
-}
+import { useTime } from "@/shared/context/TimeContext";
 
-export default function EarthquakesPoints({
-	isPlaying,
-	timeSpeed,
-	isAllMode,
-}: Props) {
+export default function EarthquakesPoints() {
 	const [data, setData] = useState<Float32Array | null>(null);
 	const materialRef = useRef<THREE.ShaderMaterial>(null);
+
+	const { isPlaying, timeSpeed, isAllMode, currentTimeRef, setCurrentTime } =
+		useTime();
+
 	const BASE_TIME_SCALE = 0.02;
 
-	const currentTimeRef = useRef(0);
-	const isPlayingRef = useRef(isPlaying);
-	const timeSpeedRef = useRef(timeSpeed);
-	const isAllModeRef = useRef(isAllMode);
 	const uniforms = useMemo(
 		() => ({
 			uMaxDepth: { value: 700.0 },
@@ -30,18 +22,6 @@ export default function EarthquakesPoints({
 		}),
 		[],
 	);
-
-	useEffect(() => {
-		isPlayingRef.current = isPlaying;
-	}, [isPlaying]);
-
-	useEffect(() => {
-		timeSpeedRef.current = timeSpeed;
-	}, [timeSpeed]);
-
-	useEffect(() => {
-		isAllModeRef.current = isAllMode;
-	}, [isAllMode]);
 
 	useEffect(() => {
 		fetch("/data/earthquakes.bin")
@@ -54,15 +34,14 @@ export default function EarthquakesPoints({
 	useFrame((_, delta) => {
 		if (!materialRef.current) return;
 
-		if (isPlayingRef.current) {
-			currentTimeRef.current += delta * timeSpeedRef.current * BASE_TIME_SCALE;
-
-			if (currentTimeRef.current > 1) currentTimeRef.current = 0;
+		if (isPlaying && !isAllMode) {
+			const next = currentTimeRef.current + delta * timeSpeed * BASE_TIME_SCALE;
+			setCurrentTime(next > 1 ? 0 : next);
 		}
 
 		uniforms.uCurrentTime.value = currentTimeRef.current;
-		uniforms.uTimeSpeed.value = timeSpeedRef.current;
-		uniforms.uShowAll.value = isAllModeRef.current ? 1.0 : 0.0;
+		uniforms.uTimeSpeed.value = timeSpeed;
+		uniforms.uShowAll.value = isAllMode ? 1.0 : 0.0;
 	});
 
 	const geometry = useMemo(() => {
@@ -158,16 +137,12 @@ export default function EarthquakesPoints({
 			varying float vTime;
 
 			void main() {
-
 				float dist = length(gl_PointCoord - vec2(0.5));
 				if (dist > 0.5) discard;
-
-				// time and visibility logic
 
 				float life = 1.0;
 
 				if (uShowAll < 0.5) {
-
 					float diff = uCurrentTime - vTime;
 					if (diff < 0.0) discard;
 
@@ -176,16 +151,9 @@ export default function EarthquakesPoints({
 
 					life = 1.0 - clamp(diff / lifeWindow, 0.0, 1.0);
 					if (life <= 0.0) discard;
-
 				} else {
-
-					// Show All mode → всегда видим
-					// чуть усиливаем визуальную плотность
 					life = 1.15;
-
 				}
-
-				// color logic
 
 				vec3 color;
 
@@ -201,9 +169,6 @@ export default function EarthquakesPoints({
 					color = mix(shallow, deep, depthNorm);
 				}
 
-				// glow and core logic
-
-
 				float glow = 1.0 - smoothstep(0.3, 0.5, dist);
 				float core = 1.0 - smoothstep(0.0, 0.15, dist);
 
@@ -214,10 +179,8 @@ export default function EarthquakesPoints({
 				}
 
 				float alpha = (glow * 0.7 + core * 0.9) * life;
-
 				gl_FragColor = vec4(finalColor, alpha);
 			}
-
         `}
 			/>
 		</points>
