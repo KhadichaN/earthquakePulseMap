@@ -9,6 +9,8 @@ import {
 	useState,
 } from "react";
 
+type DataMode = "historic" | "week";
+
 type TimeContextValue = {
 	isRotating: boolean;
 	toggleRotation: () => void;
@@ -27,6 +29,9 @@ type TimeContextValue = {
 
 	setCurrentTime: (v: number) => void;
 	resetTime: () => void;
+
+	mode: DataMode;
+	setMode: (mode: DataMode) => void;
 };
 
 const TimeContext = createContext<TimeContextValue | null>(null);
@@ -44,7 +49,14 @@ export function TimeProvider({ children }: PropsWithChildren) {
 	const currentTimeRef = useRef(0);
 	const [currentDate, setCurrentDate] = useState<Date>(new Date(START_MS));
 
+	// remember previous playback state for allMode
 	const prevPlayingRef = useRef(true);
+
+	// remember previous state when switching modes
+	const prevModePlayingRef = useRef(true);
+	const prevModeAllRef = useRef(false);
+
+	const [mode, setModeState] = useState<DataMode>("historic");
 
 	const toggleRotation = useCallback(() => {
 		setIsRotating((p) => !p);
@@ -86,6 +98,32 @@ export function TimeProvider({ children }: PropsWithChildren) {
 		});
 	}, [isPlaying]);
 
+	const setMode = useCallback(
+		(next: DataMode) => {
+			setModeState((prev) => {
+				if (prev === next) return prev;
+
+				// switching to "week": force "all data" + pause
+				if (next === "week") {
+					prevModePlayingRef.current = isPlaying;
+					prevModeAllRef.current = isAllMode;
+
+					setIsAllMode(true);
+					setIsPlaying(false);
+
+					return next;
+				}
+
+				// switching back to "historic": restore previous flags
+				setIsAllMode(prevModeAllRef.current);
+				setIsPlaying(prevModePlayingRef.current);
+
+				return next;
+			});
+		},
+		[isAllMode, isPlaying],
+	);
+
 	const value = useMemo<TimeContextValue>(
 		() => ({
 			isRotating,
@@ -96,6 +134,8 @@ export function TimeProvider({ children }: PropsWithChildren) {
 			setTimeSpeed,
 			isAllMode,
 			toggleAllMode,
+			mode,
+			setMode,
 			currentTimeRef,
 			currentDate,
 			setCurrentTime,
@@ -110,6 +150,8 @@ export function TimeProvider({ children }: PropsWithChildren) {
 			setTimeSpeed,
 			isAllMode,
 			toggleAllMode,
+			mode,
+			setMode,
 			currentDate,
 			setCurrentTime,
 			resetTime,

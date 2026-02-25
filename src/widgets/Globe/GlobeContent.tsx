@@ -6,7 +6,7 @@ import type * as THREE from "three";
 import { useTime } from "@/shared/context/TimeContext";
 import ContinentsLines from "./ContinentsLines";
 import EarthMesh from "./EarthMesh";
-import EarthquakesPoints from "./EarthquakesPoints";
+import EarthquakesPoints from "./earthquakes/EarthquakesPoints";
 
 export default function GlobeContent() {
 	const { isRotating } = useTime();

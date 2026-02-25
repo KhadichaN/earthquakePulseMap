@@ -49,6 +49,7 @@ Data is sourced from the **USGS Earthquake Catalog (GeoJSON)** and preprocessed 
   - date
   - magnitude
   - depth
+- "Last 7 days" mode 
 
 ---
 
@@ -68,14 +69,12 @@ Binary format reduces runtime parsing overhead and improves rendering performanc
 
 ## Planned Features
 
-- "Past 7 days" mode 
 - Tooltip / side panel:
   - place
   - magnitude
   - depth
   - time
   - USGS link
-- Pulse interaction (event highlight)
 - Performance optimizations for high-density rendering
 
 ---

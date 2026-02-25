@@ -6,19 +6,27 @@ interface Props {
 		startYear: number;
 		endYear: number;
 	} | null;
+	mode: "historic" | "week";
 }
 
-export default function SummaryCard({ stats }: Props) {
-	const title = stats ? `${stats.startYear}–${stats.endYear}` : "—";
+export default function SummaryCard({ stats, mode }: Props) {
+	const title =
+		mode === "week"
+			? "Last 7 Days"
+			: stats
+				? `${stats.startYear}–${stats.endYear}`
+				: "—";
+
 	const count = stats ? stats.totalCount.toLocaleString() : "—";
+
+	const subtitle =
+		mode === "week" ? "Earthquakes (M ≥ 2.5)" : "Recorded earthquakes (M ≥ 6)";
 
 	return (
 		<div className={styles.card}>
 			<h3 className={styles.title}>{title}</h3>
-
 			<p className={styles.value}>{count}</p>
-
-			<p className={styles.subtitle}>Recorded earthquakes (M ≥ 6)</p>
+			<p className={styles.subtitle}>{subtitle}</p>
 
 			<p className={styles.source}>
 				Source:{" "}

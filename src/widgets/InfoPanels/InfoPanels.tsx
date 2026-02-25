@@ -1,20 +1,10 @@
-import { useEffect, useState } from "react";
 import closeIcon from "@/shared/assets/icons/close.svg";
+import { useTime } from "@/shared/context/TimeContext";
 import DepthLegend from "./DepthLegend";
 import MagnitudeLegend from "./MagnitudeLegend";
 import SummaryCard from "./SummaryCard";
-
 import styles from "./styles.module.scss";
-
-interface Stats {
-	totalCount: number;
-	minMagnitude: number;
-	maxMagnitude: number;
-	minDepth: number;
-	maxDepth: number;
-	startYear: number;
-	endYear: number;
-}
+import { useInfoStats } from "./useInfoStats";
 
 interface InfoPanelsProps {
 	showMobileClose?: boolean;
@@ -25,16 +15,8 @@ export default function InfoPanels({
 	showMobileClose = false,
 	onMobileClose,
 }: InfoPanelsProps) {
-	const [stats, setStats] = useState<Stats | null>(null);
-
-	useEffect(() => {
-		fetch("/data/earthquakes-stats.json")
-			.then((res) => res.json())
-			.then((data) => setStats(data))
-			.catch(() => {
-				console.error("Failed to load stats");
-			});
-	}, []);
+	const stats = useInfoStats();
+	const { mode } = useTime();
 
 	return (
 		<div className={styles.wrapper}>
@@ -47,9 +29,9 @@ export default function InfoPanels({
 					<img src={closeIcon} alt="Close info panels" />
 				</button>
 			)}
-			<SummaryCard stats={stats} />
-			<DepthLegend stats={stats} />
-			<MagnitudeLegend stats={stats} />
+			<SummaryCard stats={stats} mode={mode} />
+			<DepthLegend stats={stats} mode={mode} />
+			<MagnitudeLegend stats={stats} mode={mode} />
 		</div>
 	);
 }

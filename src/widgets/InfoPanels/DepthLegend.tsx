@@ -1,11 +1,14 @@
 import styles from "./styles.module.scss";
 
 interface Props {
-	stats: { maxDepth: number } | null;
+	stats: {
+		maxDepth: number;
+	} | null;
+	mode: "historic" | "week";
 }
 
 export default function DepthLegend({ stats }: Props) {
-	const datasetMax = stats ? `${stats.maxDepth} km` : "—";
+	const datasetMax = stats ? `${stats.maxDepth.toFixed(0)} km` : "—";
 
 	return (
 		<div className={styles.card}>
@@ -19,7 +22,7 @@ export default function DepthLegend({ stats }: Props) {
 
 			<div className={styles.legendLabels}>
 				<span>0</span>
-				<span>700 (clamped)</span>
+				<span>{datasetMax}</span>
 			</div>
 
 			<div className={styles.unknownRow}>
@@ -27,9 +30,7 @@ export default function DepthLegend({ stats }: Props) {
 				<span className={styles.unknownText}>Unknown depth</span>
 			</div>
 
-			<p className={styles.note}>
-				Nonlinear mapping (pow 0.6). Dataset max: {datasetMax}.
-			</p>
+			<p className={styles.note}>Nonlinear mapping (pow 0.6).</p>
 		</div>
 	);
 }

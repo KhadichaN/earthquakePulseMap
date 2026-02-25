@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import profileIcon from "@/shared/assets/icons/profile.svg";
-import { TimeProvider } from "@/shared/context/TimeContext";
+import { TimeProvider, useTime } from "@/shared/context/TimeContext";
 import TimelineChartAm from "@/widgets/TimelineChart/TimelineChartAm";
 import DateCard from "../DateCard/DateCard";
 import InfoPanels from "../InfoPanels/InfoPanels";
@@ -27,6 +27,8 @@ function GlobeSceneInner() {
 		typeof window !== "undefined" ? window.innerWidth >= 768 : true,
 	);
 
+	const { mode, setMode } = useTime();
+
 	// const { resetTime } = useTime();
 	useEffect(() => {
 		const media = window.matchMedia("(max-width: 767px)");
@@ -50,6 +52,28 @@ function GlobeSceneInner() {
 			<Canvas frameloop="always" camera={{ position: [0, 0, 4], fov: 30 }}>
 				<GlobeContent />
 			</Canvas>
+
+			<div className={styles.modeSwitch}>
+				<button
+					type="button"
+					className={`${styles.segment} ${
+						mode === "historic" ? styles.activeSegment : ""
+					}`}
+					onClick={() => setMode("historic")}
+				>
+					Historic
+				</button>
+
+				<button
+					type="button"
+					className={`${styles.segment} ${
+						mode === "week" ? styles.activeSegment : ""
+					}`}
+					onClick={() => setMode("week")}
+				>
+					Last 7 days
+				</button>
+			</div>
 
 			<button
 				type="button"

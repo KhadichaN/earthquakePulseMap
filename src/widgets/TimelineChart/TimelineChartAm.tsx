@@ -1,8 +1,10 @@
 import * as am5 from "@amcharts/amcharts5";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
+import { useWeekEarthquakesData } from "@/shared/api/earthquakes/useEarthquakesData";
 import { useTime } from "@/shared/context/TimeContext";
 import { buildMonthlyBins } from "./bins";
+import { buildDailyBinsFromWeekEvents } from "./binsWeek";
 import { createAmRoot } from "./chart/amRoot";
 import { createStrip } from "./chart/createStrip";
 import { END_YEAR, ROW_DEPTH, ROW_GAP, ROW_MAG, START_YEAR } from "./constants";
@@ -10,12 +12,20 @@ import styles from "./styles.module.scss";
 import { pad2 } from "./utils";
 
 export default function TimelineChartAm() {
-	const { currentTimeRef, isAllMode, currentDate } = useTime();
+	const { mode, currentTimeRef, isAllMode, currentDate } = useTime();
+	const { data: weekData } = useWeekEarthquakesData(mode === "week");
 
 	const hostRef = useRef<HTMLDivElement | null>(null);
 
 	const [raw, setRaw] = useState<Float32Array | null>(null);
-	const bins = useMemo(() => (raw ? buildMonthlyBins(raw) : []), [raw]);
+
+	const bins = useMemo(() => {
+		if (mode === "week")
+			return weekData
+				? buildDailyBinsFromWeekEvents(weekData.events, weekData.range)
+				: [];
+		return raw ? buildMonthlyBins(raw) : [];
+	}, [mode, raw, weekData]);
 
 	const progressRef = useRef(0);
 	const isAllModeRef = useRef(isAllMode);
@@ -25,24 +35,37 @@ export default function TimelineChartAm() {
 	}, [isAllMode]);
 
 	const currentLabel = useMemo(() => {
+		if (mode === "week") return "Last 7 days";
 		if (isAllMode) return "1900.01 — 2026.01";
 		return `${currentDate.getUTCFullYear()}.${pad2(currentDate.getUTCMonth() + 1)}`;
-	}, [currentDate, isAllMode]);
+	}, [mode, currentDate, isAllMode]);
 
 	useEffect(() => {
-		fetch("/data/earthquakes.bin")
-			.then((r) => r.arrayBuffer())
-			.then((buf) => setRaw(new Float32Array(buf)));
-	}, []);
+		if (mode !== "historic") return;
 
-	// Обновляем прогресс постоянно, без подсветок/эффектов
+		const controller = new AbortController();
+		setRaw(null);
+
+		fetch("/data/earthquakes.bin", { signal: controller.signal })
+			.then((r) => r.arrayBuffer())
+			.then((buf) => setRaw(new Float32Array(buf)))
+			.catch(() => {
+				// ignore
+			});
+
+		return () => controller.abort();
+	}, [mode]);
+
 	useEffect(() => {
 		let raf = 0;
 
 		const tick = () => {
-			const p = isAllModeRef.current
-				? 1
-				: Math.min(Math.max(currentTimeRef.current, 0), 1);
+			const p =
+				mode === "week"
+					? 1
+					: isAllModeRef.current
+						? 1
+						: Math.min(Math.max(currentTimeRef.current, 0), 1);
 
 			progressRef.current = p;
 			raf = requestAnimationFrame(tick);
@@ -50,7 +73,7 @@ export default function TimelineChartAm() {
 
 		raf = requestAnimationFrame(tick);
 		return () => cancelAnimationFrame(raf);
-	}, [currentTimeRef]);
+	}, [currentTimeRef, mode]);
 
 	useLayoutEffect(() => {
 		const host = hostRef.current;
@@ -65,6 +88,14 @@ export default function TimelineChartAm() {
 				layout: root.verticalLayout,
 			}),
 		);
+		// mag strip
+
+		const maxMagInBins =
+			mode === "week" ? Math.max(...bins.map((b) => b.magMax), 3) : 10;
+
+		const weekYMax = mode === "week" ? Math.ceil(maxMagInBins * 1.2) : 10;
+
+		const weekYMin = mode === "week" ? 2.5 : 5;
 
 		const magChart = createStrip({
 			root,
@@ -72,8 +103,8 @@ export default function TimelineChartAm() {
 			heightPx: ROW_MAG,
 			data: bins,
 			valueField: "magMax",
-			yMin: 5,
-			yMax: 10,
+			yMin: weekYMin,
+			yMax: weekYMax,
 			fillMode: "solid",
 			solidColorInt: 0xf2b82e,
 			fillOpacity: 1,
@@ -83,25 +114,30 @@ export default function TimelineChartAm() {
 			am5.Container.new(root, { height: ROW_GAP, width: am5.p100 }),
 		);
 
+		// depth strip
+		const maxDepthInBins =
+			mode === "week" ? Math.max(...bins.map((b) => b.depthAvg), 50) : 700;
+
+		const depthYMin = mode === "week" ? -Math.ceil(maxDepthInBins * 1.2) : -700;
+
 		const depthChart = createStrip({
 			root,
 			parent: container,
 			heightPx: ROW_DEPTH,
 			data: bins,
 			valueField: "depthNeg",
-			yMin: -700,
+			yMin: depthYMin,
 			yMax: 0,
 			fillMode: "depthGradient",
 			fillOpacity: 1,
 		});
 
-		// Линии рисуем ВНУТРИ plotContainer каждого chart, чтобы учитывать padding.
 		const vLineMag = magChart.plotContainer.children.push(
 			am5.Graphics.new(root, {
 				stroke: am5.color(0xffffff),
 				strokeOpacity: 0.9,
 				strokeWidth: 2,
-				visible: !isAllModeRef.current,
+				visible: mode !== "week" && !isAllModeRef.current,
 			}),
 		);
 
@@ -110,12 +146,12 @@ export default function TimelineChartAm() {
 				stroke: am5.color(0xffffff),
 				strokeOpacity: 0.9,
 				strokeWidth: 2,
-				visible: !isAllModeRef.current,
+				visible: mode !== "week" && !isAllModeRef.current,
 			}),
 		);
 
 		const redrawLines = () => {
-			const visible = !isAllModeRef.current;
+			const visible = mode !== "week" && !isAllModeRef.current;
 
 			vLineMag.set("visible", visible);
 			vLineDepth.set("visible", visible);
@@ -155,17 +191,21 @@ export default function TimelineChartAm() {
 			d2.dispose();
 			root.dispose();
 		};
-	}, [bins]);
+	}, [bins, mode]);
 
 	if (bins.length === 0) return null;
 
 	const chartH = 130;
 
+	const magLegend =
+		mode === "week" ? "Magnitude (2.5+)" : "Magnitude (6 - 9.5)";
+	const depthLegend = "Depth (km) (0 - 700)";
+
 	return (
 		<div className={styles.wrap} aria-hidden="true">
 			<div className={styles.legends}>
-				<span className={styles.legendMag}>Magnitude</span>
-				<span className={styles.legendDepth}>Depth (km)</span>
+				<span className={styles.legendMag}>{magLegend}</span>
+				<span className={styles.legendDepth}>{depthLegend}</span>
 			</div>
 
 			<div className={styles.chartCell} style={{ height: chartH }}>
@@ -173,15 +213,21 @@ export default function TimelineChartAm() {
 			</div>
 
 			<div className={styles.axis}>
-				<span className={styles.axisStart}>{START_YEAR}</span>
+				<span className={styles.axisStart}>
+					{mode === "week" ? "7d" : START_YEAR}
+				</span>
 
 				<div
-					className={`${styles.axisDate} ${isAllMode ? styles.axisDateHidden : ""}`}
+					className={`${styles.axisDate} ${
+						mode === "week" || isAllMode ? styles.axisDateHidden : ""
+					}`}
 				>
 					{currentLabel}
 				</div>
 
-				<span className={styles.axisEnd}>{END_YEAR}</span>
+				<span className={styles.axisEnd}>
+					{mode === "week" ? "Now" : END_YEAR}
+				</span>
 			</div>
 		</div>
 	);
