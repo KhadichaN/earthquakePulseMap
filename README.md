@@ -1,6 +1,6 @@
-# Earthquake Pulse Map
+# Earthquake Map
 
-Earthquake Pulse Map is an interactive 3D globe that lets you *feel* seismic activity over time.
+Earthquake Map is an interactive 3D globe that lets you *feel* seismic activity over time.
 
 You can explore:
 - the full historical dataset (`1900–2026`, `M >= 6`)
