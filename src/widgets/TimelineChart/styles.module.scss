@@ -14,6 +14,28 @@
 	pointer-events: none;
 }
 
+.aggregationHint {
+	position: absolute;
+	top: 6px;
+	right: 18px;
+	display: flex;
+	gap: 8px;
+}
+
+.metricPill {
+	display: inline-flex;
+	align-items: center;
+	height: 20px;
+	padding: 0 9px;
+	border-radius: 999px;
+	font-size: 10px;
+	letter-spacing: 0.2px;
+	line-height: 1;
+	color: rgba(255, 255, 255, 0.84);
+	background: rgba(11, 10, 20, 0.5);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 .legends {
 	display: flex;
 	flex-direction: column;
@@ -127,4 +149,18 @@
 
 	background: none;
 	will-change: left;
+}
+
+@media (max-width: 767px) {
+	.aggregationHint {
+		top: 4px;
+		right: 12px;
+		gap: 6px;
+	}
+
+	.metricPill {
+		height: 18px;
+		padding: 0 7px;
+		font-size: 9px;
+	}
 }

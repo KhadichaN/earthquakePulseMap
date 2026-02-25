@@ -200,9 +200,15 @@ export default function TimelineChartAm() {
 	const magLegend =
 		mode === "week" ? "Magnitude (2.5+)" : "Magnitude (6 - 9.5)";
 	const depthLegend = "Depth (km) (0 - 700)";
+	const periodLabel = mode === "week" ? "per day" : "per month";
 
 	return (
 		<div className={styles.wrap} aria-hidden="true">
+			<div className={styles.aggregationHint}>
+				<span className={styles.metricPill}>M max ({periodLabel})</span>
+				<span className={styles.metricPill}>Depth avg ({periodLabel})</span>
+			</div>
+
 			<div className={styles.legends}>
 				<span className={styles.legendMag}>{magLegend}</span>
 				<span className={styles.legendDepth}>{depthLegend}</span>
